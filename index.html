@@ -1,15 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/modern-normalize@3/modern-normalize.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
-</head>
-<body>
-    <div class="active-player-message"></div>
-    <div class="board"></div>
-    <div class="win-message"></div>
-</body>
+  </head>
+  <body>
+    <div class="enter-page">
+      <form action="">
+        <label for="player-one-name"
+          >Player 1 Name:
+          <input class="player-one-name" type="text" />
+        </label>
+        <label for="player-two-name"
+          >Player 2 Name:
+          <input class="player-two-name" type="text" />
+        </label>
+      </form>
+      <button class="start">Start</button>
+    </div>
+
+    <div class="game-page">
+      <div class="board-and-button">
+        <div class="board"></div>
+        <button class="restart hidden">Restart</button>
+      </div>
+      <div class="other-stuff">
+          <div class="messages">
+            <div class="active-player-message"></div>
+            <div class="move-status-message"></div>
+          </div>
+          <div class="results">
+            <div class="player-one-wins"></div>
+            <div class="player-two-wins"></div>
+            <div class="draws"></div>
+          </div>
+      </div>
+    </div>
+  </body>
 </html>

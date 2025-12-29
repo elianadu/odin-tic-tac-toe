@@ -1,13 +1,61 @@
+:root {
+  --dark-color: #2c3a26;
+  --medium-color: #d6e0d6;
+  --medium-light-color: #f2f6ef;
+  --light-color: #fffef6;
+}
+
+body {
+  background-color: var(--dark-color);
+  color: var(--light-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.enter-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+button {
+    border-radius: 20px;
+    height: 50px;
+    width: 100px;
+    background-color: var(--light-color);
+}
+
+.game-page {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.other-stuff {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    font-size: 1.5em;
+}
+
+.board-and-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+}
+
 .board {
   display: grid;
-  height: 500px;
-  width: 500px;
+  height: min(80vh, 80vw);
+  width: min(80vh, 80vw);
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  border: 1px solid black;
-  gap: 2px;
-  padding: 2px;
-  background-color: green;
+  border: 4px solid var(--dark-color);
+  background-color: var(--light-color);
+  justify-content: center;
 }
 
 .cell {
@@ -15,8 +63,18 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 2rem;
-  border: 1px solid pink;
-  background: lightyellow;
+  font-size: 4rem;
+  font-weight: bold;
+  border: 4px solid var(--dark-color);
+  background-color: var(--medium-color);
+  color: var(--dark-color);
   cursor: pointer;
+}
+
+.cell:hover {
+  background-color: var(--light-color);
+}
+
+.hidden {
+  display: none;
 }

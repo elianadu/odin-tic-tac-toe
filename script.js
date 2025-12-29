@@ -1,5 +1,12 @@
 const numRows = 3;
 const numColumns = 3;
+const boardDiv = document.querySelector(".board");
+const moveStatusDiv = document.querySelector(".move-status-message");
+let playerOneName = "";
+let playerTwoName = "";
+let numPlayerOneWins = 0;
+let numPlayerTwoWins = 0;
+let numDraws = 0;
 
 function Cell() {
   let value = 0;
@@ -38,10 +45,7 @@ function Gameboard() {
   return { getBoard, printBoard, placeMarker, isValidMove };
 }
 
-function GameController(
-  playerOneName = "Player One",
-  playerTwoName = "Player Two"
-) {
+function GameController() {
   const board = Gameboard();
 
   players = [
@@ -193,10 +197,16 @@ function GameController(
 function ScreenController() {
   const game = GameController();
   const activePlayerDiv = document.querySelector(".active-player-message");
-  const boardDiv = document.querySelector(".board");
-  const winDiv = document.querySelector(".win-message");
 
   const createBoard = () => {
+    displayResults();
+    const clearScreen = (() => {
+      while (boardDiv.firstChild) {
+        boardDiv.removeChild(boardDiv.firstChild);
+      }
+      boardDiv.classList.remove("hidden");
+    })();
+
     const activePlayer = game.getActivePlayer().name;
     activePlayerDiv.textContent = `${activePlayer}'s turn`;
 
@@ -228,6 +238,15 @@ function ScreenController() {
     }
   };
 
+  const displayResults = () => {
+    const playerOneWinsDiv = document.querySelector(".player-one-wins");
+    const playerTwoWinsDiv = document.querySelector(".player-two-wins");
+    const drawsDiv = document.querySelector(".draws");
+    playerOneWinsDiv.textContent = `${playerOneName}'s wins: ${numPlayerOneWins}`;
+    playerTwoWinsDiv.textContent = `${playerTwoName}'s wins: ${numPlayerTwoWins}`;
+    drawsDiv.textContent = `Draws: ${numDraws}`;
+  };
+
   const updateScreen = (isValid, isWinning, isTie) => {
     const activePlayer = game.getActivePlayer().name;
     const readableBoard = game
@@ -236,14 +255,22 @@ function ScreenController() {
     const boardArr = Array.from(boardDiv.querySelectorAll(".cell"));
     activePlayerDiv.textContent = `${activePlayer}'s turn`;
     if (!isValid) {
-      winDiv.textContent = "Sorry, that's not a valid move.";
-    } else if (isWinning) {
-      winDiv.textContent = `${activePlayer} won!`;
-    } else if (isTie) {
-      winDiv.textContent = `You tied!`;
-    }
-    else {
-        winDiv.textContent = "";
+      moveStatusDiv.textContent = "Sorry, that's not a valid move.";
+    } else if (isWinning || isTie) {
+      if (isWinning) {
+        if (activePlayer === playerOneName) {
+          numPlayerOneWins++;
+        } else {
+          numPlayerTwoWins++;
+        }
+        moveStatusDiv.textContent = `${activePlayer} won!`;
+      } else if (isTie) {
+        numDraws++;
+        moveStatusDiv.textContent = `You tied!`;
+      }
+      displayResults();
+    } else {
+      moveStatusDiv.textContent = "";
     }
 
     for (let i = 0; i < numRows; i++) {
@@ -262,4 +289,31 @@ function ScreenController() {
   createBoard();
 }
 
-ScreenController();
+function SetGame() {
+  const restartBtn = document.querySelector(".restart");
+  const startBtn = document.querySelector(".start");
+
+  boardDiv.classList.add("hidden");
+
+  startBtn.addEventListener("click", () => {
+    playerOneName =
+      document.querySelector(".player-one-name").value || "Player One";
+    playerTwoName =
+      document.querySelector(".player-two-name").value || "Player Two";
+
+    const enterPage = document.querySelector(".enter-page");
+    enterPage.classList.add("hidden");
+
+    restartBtn.textContent = "Restart";
+    restartBtn.classList.remove("hidden");
+    moveStatusDiv.textContent = "";
+    ScreenController();
+  });
+
+  restartBtn.addEventListener("click", () => {
+    moveStatusDiv.textContent = "";
+    ScreenController();
+  });
+}
+
+SetGame();

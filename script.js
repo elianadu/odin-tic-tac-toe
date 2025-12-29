@@ -43,7 +43,6 @@ function GameController(
   playerTwoName = "Player Two"
 ) {
   const board = Gameboard();
-  // const readableBoard = board.getBoard();
 
   players = [
     {
@@ -166,39 +165,41 @@ function GameController(
       return true;
     };
 
-    const getMoveStatus = () => {
-        let moveStatus = "";
     if (!board.isValidMove(row, column)) {
-      console.log("Sorry, that's not a valid move!");
+      console.log(`Sorry, that's not valid`);
       printNewRound();
+      return "invalid";
     } else {
       board.placeMarker(row, column, getActivePlayer().marker);
 
       if (isWinningMove()) {
         console.log(`${getActivePlayer().name} wins!`);
         board.printBoard();
+        return "winning";
       } else if (boardIsFull()) {
         console.log(`You tied!`);
+        return "tie";
       } else {
         switchTurns();
         printNewRound();
+        return "";
       }
     }
-    return moveStatus;
-    }
-    return {getMoveStatus};
   };
   printNewRound();
-  return { getActivePlayer, playRound, getBoard: board.getBoard};
+  return { getActivePlayer, playRound, getBoard: board.getBoard };
 }
-
 
 function ScreenController() {
   const game = GameController();
   const activePlayerDiv = document.querySelector(".active-player-message");
   const boardDiv = document.querySelector(".board");
+  const winDiv = document.querySelector(".win-message");
 
   const createBoard = () => {
+    const activePlayer = game.getActivePlayer().name;
+    activePlayerDiv.textContent = `${activePlayer}'s turn`;
+
     for (let i = 0; i < numRows; i++) {
       for (let j = 0; j < numColumns; j++) {
         const cellDiv = document.createElement(`div`);
@@ -207,38 +208,58 @@ function ScreenController() {
         cellDiv.classList.add(`column-${j}`);
 
         cellDiv.addEventListener("click", () => {
-            game.playRound(i, j);
-            updateScreen();
-        })
+          let move = game.playRound(i, j);
+          let isValid = true;
+          let isWinning = false;
+          let isTie = false;
+
+          if (move === "invalid") {
+            isValid = false;
+          } else if (move === "winning") {
+            isWinning = true;
+          } else if (move === "tie") {
+            isTie = true;
+          }
+          updateScreen(isValid, isWinning, isTie);
+        });
 
         boardDiv.appendChild(cellDiv);
       }
     }
-  }
+  };
 
-  const updateScreen = () => {
+  const updateScreen = (isValid, isWinning, isTie) => {
     const activePlayer = game.getActivePlayer().name;
-    const readableBoard = game.getBoard().map((row) => row.map((cell) => cell.readCellValue()));
+    const readableBoard = game
+      .getBoard()
+      .map((row) => row.map((cell) => cell.readCellValue()));
     const boardArr = Array.from(boardDiv.querySelectorAll(".cell"));
     activePlayerDiv.textContent = `${activePlayer}'s turn`;
+    if (!isValid) {
+      winDiv.textContent = "Sorry, that's not a valid move.";
+    } else if (isWinning) {
+      winDiv.textContent = `${activePlayer} won!`;
+    } else if (isTie) {
+      winDiv.textContent = `You tied!`;
+    }
+    else {
+        winDiv.textContent = "";
+    }
 
     for (let i = 0; i < numRows; i++) {
       for (let j = 0; j < numColumns; j++) {
         if (readableBoard[i][j] === 1) {
-            boardArr[i*numRows + j].textContent = "X";
-        }
-        else if (readableBoard[i][j] === 2) {
-            boardArr[i*numRows + j].textContent = "O";
-        }
-        else {
-            boardArr[i*numRows + j].textContent = "";
+          boardArr[i * numRows + j].textContent = "X";
+        } else if (readableBoard[i][j] === 2) {
+          boardArr[i * numRows + j].textContent = "O";
+        } else {
+          boardArr[i * numRows + j].textContent = "";
         }
       }
     }
   };
 
-createBoard();
-updateScreen();
+  createBoard();
 }
 
 ScreenController();
